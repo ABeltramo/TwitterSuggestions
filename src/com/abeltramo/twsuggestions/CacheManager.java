@@ -6,10 +6,12 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 /**
- * Created by ale on 29/12/16.
+ * twitter-suggestions
+ * Created by ABeltramo on 29/12/16.
  */
 public class CacheManager {
-    File cacheDir;
+    private File cacheDir;
+
     public CacheManager(){
         cacheDir  = new File("Cache");
         cacheDir.mkdir();                               // Create the cache folder if not exists
@@ -42,6 +44,11 @@ public class CacheManager {
             System.out.println("File input error");
         }
         return content;
+    }
+
+    public boolean exists(String filename){
+        File f = new File( getCachePath() + filename);
+        return f.exists();
     }
 
     private static String readFile(String path, Charset encoding)

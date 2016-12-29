@@ -8,7 +8,8 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Created by ale on 28/12/16.
+ * twitter-suggestions
+ * Created by ABeltramo on 28/12/16.
  */
 public class TwitterAPI {
     private static final int maxTweet = 200;
@@ -49,16 +50,16 @@ public class TwitterAPI {
     }
 
     // Friends are those that a user follows and by whom she is followed back.
-    public static ArrayList<Long> getUserFriends(String user){
+    public static ArrayList<String> getUserFriends(String user){
         Twitter tw = configureTwitter();
-        ArrayList<Long> friendsIDs = new ArrayList<>();
+        ArrayList<String> friendsIDs = new ArrayList<>();
         try {
             IDs following = tw.getFriendsIDs(user, -1);             // Get the following list
             IDs followers = tw.getFollowersIDs(user, -1);           // Get the followers list
             for(Long id : following.getIDs()){                         // For each following user
                 if(Arrays.stream(followers.getIDs())
                                           .anyMatch(x -> x == id)){    // Check if is also a follower
-                    friendsIDs.add(id); // Add to the result
+                    friendsIDs.add(tw.showUser(id).getScreenName()); // Add to the result
                 }
             }
         } catch (TwitterException e) {
