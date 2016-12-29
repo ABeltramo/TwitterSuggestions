@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="lucene-queries-6.2.1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/API/lucene-6.2.1/queries/lucene-queries-6.2.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -4,12 +4,14 @@ import twitter4j.*;
 import twitter4j.conf.ConfigurationBuilder;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
  * Created by ale on 28/12/16.
  */
 public class TwitterAPI {
+    private static final int maxTweet = 200;
 
     public static Twitter configureTwitter(){
         ConfigurationBuilder cb = new ConfigurationBuilder();
@@ -22,14 +24,21 @@ public class TwitterAPI {
         return tf.getInstance();
     }
 
-    public static List<Status> getUserStats(String user) {
-        return getUserStats(user,1,200);
+    public static List<Status> getUserStats(String user){
+        Twitter tw = configureTwitter();
+        Paging paging = new Paging(1, maxTweet);
+        List<Status> statuses = null;
+        try {
+            statuses = tw.getUserTimeline(user,paging);
+        } catch (TwitterException e) {
+            e.printStackTrace();
+        }
+        return statuses;
     }
 
-    public static List<Status> getUserStats(String user,int pageNumber, int resultperpage){
+    public static List<Status> getUserStats(Long user){
         Twitter tw = configureTwitter();
-        //First param of Paging() is the page number, second is the number per page (this is capped around 200 I think.
-        Paging paging = new Paging(pageNumber, resultperpage);
+        Paging paging = new Paging(1, maxTweet);
         List<Status> statuses = null;
         try {
             statuses = tw.getUserTimeline(user,paging);
@@ -40,14 +49,18 @@ public class TwitterAPI {
     }
 
     // Friends are those that a user follows and by whom she is followed back.
-    // todo: Controllare se è giusta la definizione di friend
-    public static IDs getUserFriends(String user){
+    public static ArrayList<Long> getUserFriends(String user){
         Twitter tw = configureTwitter();
-        long cursor = -1;
-        long lCursor = -1;
-        IDs friendsIDs = null;
+        ArrayList<Long> friendsIDs = new ArrayList<>();
         try {
-            friendsIDs = tw.getFriendsIDs(user, lCursor);
+            IDs following = tw.getFriendsIDs(user, -1);             // Get the following list
+            IDs followers = tw.getFollowersIDs(user, -1);           // Get the followers list
+            for(Long id : following.getIDs()){                         // For each following user
+                if(Arrays.stream(followers.getIDs())
+                                          .anyMatch(x -> x == id)){    // Check if is also a follower
+                    friendsIDs.add(id); // Add to the result
+                }
+            }
         } catch (TwitterException e) {
             e.printStackTrace();
         }

@@ -8,5 +8,8 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="twitter4j-core-4.0.4" level="project" />
+    <orderEntry type="library" name="lucene-queries-6.2.1" level="project" />
+    <orderEntry type="library" name="lucene-core-6.2.1" level="project" />
+    <orderEntry type="library" name="lucene-queryparser-6.2.1" level="project" />
   </component>
 </module>
