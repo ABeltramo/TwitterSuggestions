@@ -1,6 +1,8 @@
 package com.abeltramo.twsuggestions;
 
 
+import twitter4j.JSONObject;
+
 /**
  * twitter-suggestions
  * Created by ABeltramo on 29/12/16.
@@ -23,5 +25,8 @@ public class Main {
                 System.out.println("@" + friend + ": " + tweet);
             }
         }
+
+        NewsManager nwmanager = new NewsManager();
+        nwmanager.getAllNews();
     }
 }
