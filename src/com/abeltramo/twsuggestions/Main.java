@@ -2,18 +2,7 @@ package com.abeltramo.twsuggestions;
 
 
 import com.abeltramo.lucene.IndexNews;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.document.*;
-import org.apache.lucene.index.IndexWriter;
-import org.apache.lucene.index.IndexWriterConfig;
-import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.FSDirectory;
-import twitter4j.JSONArray;
-import twitter4j.JSONException;
-import twitter4j.JSONObject;
-
-import java.io.File;
-import java.io.IOException;
+import com.abeltramo.lucene.IndexTweet;
 
 /**
  * twitter-suggestions
@@ -22,26 +11,21 @@ import java.io.IOException;
 public class Main {
 
     public static void main(String[] args) {
-        String user = "ABeltradev";
-
+        String user = "BillGates";
+        IndexTweet itw = new IndexTweet();
         TwManager twmanager = new TwManager();
-        for(String tweet : twmanager.getUserPost(user)){
-            //System.out.println("@" + user + ": " + tweet);
-        }
 
-        //System.out.println("\n* Getting friend list *\n");
-
+        System.out.println("* Indexing @" + user + " tweet *");
+        itw.makeIndex(twmanager.getUserPost(user),1.5f);
         for(String friend : twmanager.getUserFriend(user)){
-            //System.out.println("\n* Getting @" + friend + " tweet *\n");
-            for(String tweet : twmanager.getUserPost(friend)){
-                //System.out.println("@" + friend + ": " + tweet);
-            }
+            System.out.println("* Indexing @" + friend + " tweet *");
+            itw.makeIndex(twmanager.getUserPost(friend),1.0f);
         }
+        itw.closeWrite();
 
-        System.out.println("\n* News *\n");
+        System.out.println("* Indexing News *");
         NewsManager nwmanager = new NewsManager();
-        IndexNews.makeIndex(nwmanager.getAllNews());
-
-
+        IndexNews inw = new IndexNews();
+        inw.makeIndex(nwmanager.getAllNews());
     }
 }
