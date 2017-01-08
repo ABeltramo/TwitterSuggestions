@@ -32,9 +32,9 @@ public class TwitterAPI {
 
             @Override
             public void onRateLimitReached( RateLimitStatusEvent event ) {
-                System.out.println("--- Twitter API limit reached ---\nWaiting "+ event.getRateLimitStatus().getSecondsUntilReset() +" sec");
+                System.out.println("!!!\n   Twitter API limit reached \n   Waiting "+ event.getRateLimitStatus().getSecondsUntilReset() +" sec\n!!!");
                 try {
-                    TimeUnit.SECONDS.sleep(event.getRateLimitStatus().getSecondsUntilReset());
+                    TimeUnit.SECONDS.sleep(event.getRateLimitStatus().getSecondsUntilReset()+5);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

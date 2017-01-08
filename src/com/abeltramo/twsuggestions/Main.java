@@ -11,12 +11,13 @@ import com.abeltramo.lucene.IndexTweet;
 public class Main {
 
     public static void main(String[] args) {
-        String user = "BillGates";
+        String user = "ABeltradev";
         IndexTweet itw = new IndexTweet();
         TwManager twmanager = new TwManager();
 
         System.out.println("* Indexing @" + user + " tweet *");
         itw.makeIndex(twmanager.getUserPost(user),1.5f);
+        System.out.println("* Getting @" + user + " friends *");
         for(String friend : twmanager.getUserFriend(user)){
             System.out.println("* Indexing @" + friend + " tweet *");
             itw.makeIndex(twmanager.getUserPost(friend),1.0f);

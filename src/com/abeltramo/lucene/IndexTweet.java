@@ -29,7 +29,7 @@ public class IndexTweet {
         luceneDir.mkdir();                                    // Create news directory if not exists
         try {
             Directory directory = FSDirectory.open(luceneDir.toPath());
-            StandardAnalyzer analyzer = new StandardAnalyzer();
+            TwitterAnalizer analyzer = new TwitterAnalizer();
             IndexWriterConfig config = new IndexWriterConfig(analyzer);
             config.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
             iwriter = new IndexWriter(directory, config);
