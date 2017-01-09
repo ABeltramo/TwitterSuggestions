@@ -12,8 +12,9 @@ import java.util.concurrent.TimeUnit;
  * Created by ABeltramo on 28/12/16.
  */
 public class TwitterAPI {
-    private static final int maxTweet = 200;        // This should not be changed
-    private static final int maxPages = 10;         // max 2000 tweet per user
+    private static final int maxTweet       = 200;        // This should not be changed
+    private static final int maxPages       = 10;         // max 2000 tweet per user
+    private static final int maxUserPerPage = 200;        // This value is the maximum possible
 
     public static Twitter configureTwitter(){
         ConfigurationBuilder cb = new ConfigurationBuilder();
@@ -34,7 +35,8 @@ public class TwitterAPI {
             public void onRateLimitReached( RateLimitStatusEvent event ) {
                 System.out.println("!!!\n   Twitter API limit reached \n   Waiting "+ event.getRateLimitStatus().getSecondsUntilReset() +" sec\n!!!");
                 try {
-                    TimeUnit.SECONDS.sleep(event.getRateLimitStatus().getSecondsUntilReset()+5);
+                    TimeUnit.SECONDS.sleep(event.getRateLimitStatus().getSecondsUntilReset()+15);
+                    System.out.println("Restarting...");
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -45,7 +47,7 @@ public class TwitterAPI {
 
     public static List<Status> getUserStats(String user){
         Twitter tw = configureTwitter();
-        List<Status> statuses = new ArrayList<Status>();
+        List<Status> statuses = new ArrayList<>();
         try {
             int prevStatLength;
             for(int i=1;i<=maxPages;i++) {
@@ -66,10 +68,10 @@ public class TwitterAPI {
         ArrayList<String> friendsIDs = new ArrayList<>();
         try {
             ArrayList<Long> following = getAllFriendsIDs(user,true);             // Get the following list
-            ArrayList<Long> followers = getAllFriendsIDs(user,false);           // Get the followers list
-            for(Long id : following){                         // For each following user
-                if(followers.contains(id)){    // Check if is also a follower
-                    friendsIDs.add(tw.showUser(id).getScreenName()); // Add to the result
+            ArrayList<Long> followers = getAllFriendsIDs(user,false);            // Get the followers list
+            for(Long id : following){                                                   // For each following user
+                if(followers.contains(id)){                                             // Check if is also a follower
+                    friendsIDs.add(tw.showUser(id).getScreenName());                    // Add to the result
                 }
             }
         } catch (TwitterException e) {
@@ -86,9 +88,9 @@ public class TwitterAPI {
             IDs ids = null;
             do{
                 if(friend)
-                    ids = tw.getFriendsIDs(user, cursor);
+                    ids = tw.getFriendsIDs(user, cursor, maxUserPerPage);
                 else
-                    ids = tw.getFollowersIDs(user, cursor);
+                    ids = tw.getFollowersIDs(user, cursor, maxUserPerPage);
                 for(Long id : ids.getIDs()){
                     tmp.add(id);
                 }

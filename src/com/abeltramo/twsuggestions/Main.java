@@ -11,7 +11,7 @@ import com.abeltramo.lucene.IndexTweet;
 public class Main {
 
     public static void main(String[] args) {
-        String user = "ABeltradev";
+        String user = "cvrebert"; // From: @getbootstrap
         IndexTweet itw = new IndexTweet();
         TwManager twmanager = new TwManager();
 
