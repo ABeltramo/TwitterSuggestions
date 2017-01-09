@@ -6,6 +6,7 @@ import com.abeltramo.lucene.IndexTweet;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 /**
  * twitter-suggestions
@@ -15,30 +16,50 @@ public class MainForm {
     private JButton searchBtn;
     private JPanel panel1;
     private JTextField txtUser;
+    private JProgressBar progressBar;
+    private JLabel Status;
+    private JCheckBox ChkUseCache;
 
     public MainForm() {
         searchBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String user = txtUser.getText();
+                String user = txtUser.getText().replace("@","");
                 IndexTweet itw = new IndexTweet();
                 TwManager twmanager = new TwManager();
 
-                System.out.println("* Indexing @" + user + " tweet *");
-                itw.makeIndex(twmanager.getUserPost(user),1.5f);
-                System.out.println("* Getting @" + user + " friends *");
-                for(String friend : twmanager.getUserFriend(user)){
-                    System.out.println("* Indexing @" + friend + " tweet *");
-                    itw.makeIndex(twmanager.getUserPost(friend),1.0f);
-                }
-                itw.closeWrite();
+                new Thread(new Runnable() {
+                    public void run() {
 
-                System.out.println("* Indexing News *");
-                NewsManager nwmanager = new NewsManager();
-                IndexNews inw = new IndexNews();
-                inw.makeIndex(nwmanager.getAllNews());
+                        notifyUser(10,"Indexing @" + user + " tweet");
+                        itw.makeIndex(twmanager.getUserPost(user),1.5f);
+                        notifyUser(20,"Getting @" + user + " friend list");
+                        for(String friend : twmanager.getUserFriend(user)){
+                            notifyUser(30,"Getting @" + friend + " tweet");
+                            itw.makeIndex(twmanager.getUserPost(friend),1.0f);
+                        }
+                        itw.closeWrite();
+
+                        notifyUser(50,"Getting news");
+                        NewsManager nwmanager = new NewsManager();
+                        IndexNews inw = new IndexNews();
+                        inw.makeIndex(nwmanager.getAllNews());
+                        notifyUser(100,"Completed");
+                    }
+                }).start();
             }
         });
+    }
+
+    private void notifyUser(int progress, String status){
+        SwingUtilities.invokeLater(new Runnable() {
+           public void run() {
+               progressBar.setVisible(true);
+               progressBar.setValue(progress);
+               Status.setVisible(true);
+               Status.setText(status);
+           }
+       });
     }
 
     public static void main(String[] args) {
@@ -46,6 +67,7 @@ public class MainForm {
         frame.setContentPane(new MainForm().panel1);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
+        frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
 }
