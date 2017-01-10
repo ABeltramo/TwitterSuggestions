@@ -25,12 +25,12 @@ public class MainForm {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String user = txtUser.getText().replace("@","");
+                boolean useCache = ChkUseCache.isSelected();
                 IndexTweet itw = new IndexTweet();
-                TwManager twmanager = new TwManager();
+                TwManager twmanager = new TwManager(useCache);
 
                 new Thread(new Runnable() {
                     public void run() {
-
                         notifyUser(10,"Indexing @" + user + " tweet");
                         itw.makeIndex(twmanager.getUserPost(user),1.5f);
                         notifyUser(20,"Getting @" + user + " friend list");
@@ -41,7 +41,7 @@ public class MainForm {
                         itw.closeWrite();
 
                         notifyUser(50,"Getting news");
-                        NewsManager nwmanager = new NewsManager();
+                        NewsManager nwmanager = new NewsManager(useCache);
                         IndexNews inw = new IndexNews();
                         inw.makeIndex(nwmanager.getAllNews());
                         notifyUser(100,"Completed");
@@ -51,7 +51,7 @@ public class MainForm {
         });
     }
 
-    private void notifyUser(int progress, String status){
+    public void notifyUser(int progress, String status){
         SwingUtilities.invokeLater(new Runnable() {
            public void run() {
                progressBar.setVisible(true);
@@ -69,5 +69,9 @@ public class MainForm {
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+    }
+
+    public static void msgbox(String message,String title){
+        JOptionPane.showMessageDialog(null, message,title,JOptionPane.WARNING_MESSAGE);
     }
 }

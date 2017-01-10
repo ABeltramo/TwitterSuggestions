@@ -11,22 +11,26 @@ import java.util.ArrayList;
 public class TwManager {
 
     private CacheManager _cm;
-    public TwManager(){
+    private boolean _useCache;
+    public TwManager(boolean useCache){
+        _useCache = useCache;
         _cm = new CacheManager();
     }
 
     public ArrayList<String> getUserPost(String user){
         ArrayList<String> result = new ArrayList<>();
         String filename = user+".tweet";
-        if(_cm.exists(filename)){
+        if(_cm.exists(filename) && _useCache){
             for(String tweet : _cm.get(filename).split("\n")){
                 result.add(tweet);
             }
         }
         else{
+            boolean delete = true;                                  // Delete file only on first run
             for (Status status : TwitterAPI.getUserStats(user)) {
                 result.add(status.getText());
-                _cm.set(filename,status.getText()+"\n",false);
+                _cm.set(filename,status.getText()+"\n",delete);
+                delete = false;
             }
         }
         return result;
@@ -35,15 +39,17 @@ public class TwManager {
     public ArrayList<String> getUserFriend(String user){
         ArrayList<String> result = new ArrayList<>();
         String filename = user+".friends";
-        if(_cm.exists(filename)) {
+        if(_cm.exists(filename) && _useCache) {
             for(String friend : _cm.get(filename).split("\n")){
                 result.add(friend);
             }
         }
         else{
+            boolean delete = true;                                  // Delete file only on first run
             for (String friend : TwitterAPI.getUserFriends(user)) {
                 result.add(friend);
-                _cm.set(filename,friend+"\n",false);
+                _cm.set(filename,friend+"\n",delete);
+                delete = false;
             }
         }
         return result;

@@ -14,7 +14,9 @@ public class NewsManager {
 
     private String _APIKey = "8307ef1a9d594effa19b7b099bca45b7";
     private CacheManager _cm;
-    public NewsManager(){
+    private boolean _useCache;
+    public NewsManager(boolean useCache){
+        _useCache = useCache;
         _cm = new CacheManager();
     }
 
@@ -38,12 +40,12 @@ public class NewsManager {
     private JSONObject getRemote(String url,String file){
         JSONObject result = null;
         try{
-            if(_cm.exists(file)){
+            if(_cm.exists(file) && _useCache){
                 result = new JSONObject(_cm.get(file));
             }
             else {
                 result = RESTClient.getUrl(url);
-                _cm.set(file,result.toString(),false);
+                _cm.set(file,result.toString(),true);
             }
 
         } catch (JSONException e) {
