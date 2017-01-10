@@ -12,7 +12,10 @@ public class TwManager {
 
     private CacheManager _cm;
     private boolean _useCache;
+    private TwitterAPI _twa;
+
     public TwManager(boolean useCache){
+        _twa = new TwitterAPI();
         _useCache = useCache;
         _cm = new CacheManager();
     }
@@ -27,7 +30,7 @@ public class TwManager {
         }
         else{
             boolean delete = true;                                  // Delete file only on first run
-            for (Status status : TwitterAPI.getUserStats(user)) {
+            for (Status status : _twa.getUserStats(user)) {
                 result.add(status.getText());
                 _cm.set(filename,status.getText()+"\n",delete);
                 delete = false;
@@ -46,7 +49,7 @@ public class TwManager {
         }
         else{
             boolean delete = true;                                  // Delete file only on first run
-            for (String friend : TwitterAPI.getUserFriends(user)) {
+            for (String friend : _twa.getUserFriends(user)) {
                 result.add(friend);
                 _cm.set(filename,friend+"\n",delete);
                 delete = false;

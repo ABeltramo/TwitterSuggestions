@@ -6,7 +6,6 @@ import com.abeltramo.lucene.IndexTweet;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
 /**
  * twitter-suggestions
@@ -19,6 +18,7 @@ public class MainForm {
     private JProgressBar progressBar;
     private JLabel Status;
     private JCheckBox ChkUseCache;
+    private JCheckBox ChkFriends;
 
     public MainForm() {
         searchBtn.addActionListener(new ActionListener() {
@@ -27,6 +27,7 @@ public class MainForm {
                 searchBtn.setEnabled(false);
                 String user = txtUser.getText().replace("@","");
                 boolean useCache = ChkUseCache.isSelected();
+                boolean useFriends = ChkFriends.isSelected();
                 IndexTweet itw = new IndexTweet();
                 TwManager twmanager = new TwManager(useCache);
 
@@ -34,10 +35,12 @@ public class MainForm {
                     public void run() {
                         notifyUser(10,"Indexing @" + user + " tweet");
                         itw.makeIndex(twmanager.getUserPost(user),1.5f);
-                        notifyUser(20,"Getting @" + user + " friend list");
-                        for(String friend : twmanager.getUserFriend(user)){
-                            notifyUser(30,"Getting @" + friend + " tweet");
-                            itw.makeIndex(twmanager.getUserPost(friend),1.0f);
+                        if(useFriends) {
+                            notifyUser(20, "Getting @" + user + " friend list");
+                            for (String friend : twmanager.getUserFriend(user)) {
+                                notifyUser(30, "Getting @" + friend + " tweet");
+                                itw.makeIndex(twmanager.getUserPost(friend), 1.0f);
+                            }
                         }
                         itw.closeWrite();
 
@@ -45,6 +48,8 @@ public class MainForm {
                         NewsManager nwmanager = new NewsManager(useCache);
                         IndexNews inw = new IndexNews();
                         inw.makeIndex(nwmanager.getAllNews());
+
+
                         notifyUser(100,"Completed");
                         completedBackground();
                     }

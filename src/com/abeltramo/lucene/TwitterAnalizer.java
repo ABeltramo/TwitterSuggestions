@@ -26,7 +26,7 @@ public class TwitterAnalizer extends Analyzer {
         final Tokenizer tokenizer = new WhitespaceTokenizer();
         TokenStream result = new StandardFilter(tokenizer);
         result = new StopFilter(result,StopAnalyzer.ENGLISH_STOP_WORDS_SET);
-        result = new LengthFilter(result, 6, Integer.MAX_VALUE); 	                            // Accept only tokens which have the length more than 6 characters.
+        result = new LengthFilter(result, 5, Integer.MAX_VALUE); 	                            // Accept only tokens which have the length more than 6 characters.
         result = new PatternReplaceFilter(result,Pattern.compile("[#]"),"",true);   // Remove # and take the remaining text
         result = new TwitterFilter(result);
         result = new LowerCaseFilter(result);

@@ -71,6 +71,7 @@ public class IndexNews {
         Document doc = new Document();
         if(source != null) {
             Field Ftitle = new TextField("title", title, Field.Store.YES);
+            Ftitle.setBoost(1.2f); // Added boost to title
             doc.add(Ftitle);
         }
         if(description != null) {
@@ -78,11 +79,11 @@ public class IndexNews {
             doc.add(Fdescription);
         }
         if(url != null) {
-            Field Furl = new StringField("url", url, Field.Store.NO);
+            Field Furl = new StringField("url", url, Field.Store.YES);
             doc.add(Furl);
         }
         if(source != null) {
-            Field Fsource = new StringField("source", source, Field.Store.NO);
+            Field Fsource = new StringField("source", source, Field.Store.YES);
             doc.add(Fsource);
         }
         return doc;
