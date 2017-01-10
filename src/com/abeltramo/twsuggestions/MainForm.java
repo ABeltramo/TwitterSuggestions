@@ -24,6 +24,7 @@ public class MainForm {
         searchBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                searchBtn.setEnabled(false);
                 String user = txtUser.getText().replace("@","");
                 boolean useCache = ChkUseCache.isSelected();
                 IndexTweet itw = new IndexTweet();
@@ -45,13 +46,24 @@ public class MainForm {
                         IndexNews inw = new IndexNews();
                         inw.makeIndex(nwmanager.getAllNews());
                         notifyUser(100,"Completed");
+                        completedBackground();
                     }
                 }).start();
             }
         });
     }
 
-    public void notifyUser(int progress, String status){
+    private void completedBackground(){
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                progressBar.setVisible(false);
+                Status.setVisible(false);
+                searchBtn.setEnabled(true);
+            }
+        });
+    }
+
+    private void notifyUser(int progress, String status){
         SwingUtilities.invokeLater(new Runnable() {
            public void run() {
                progressBar.setVisible(true);

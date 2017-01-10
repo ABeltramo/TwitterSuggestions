@@ -6,12 +6,14 @@
     </constraints>
     <properties>
       <minimumSize width="80" height="80"/>
-      <preferredSize width="404" height="100"/>
+      <preferredSize width="420" height="150"/>
     </properties>
     <clientProperties>
       <html.disable class="java.lang.Boolean" value="false"/>
     </clientProperties>
-    <border type="none"/>
+    <border type="empty" title="Twitter Suggestions" title-justification="2" title-position="2">
+      <size top="20" left="20" bottom="20" right="20"/>
+    </border>
     <children>
       <component id="63fc2" class="javax.swing.JButton" binding="searchBtn">
         <constraints>
