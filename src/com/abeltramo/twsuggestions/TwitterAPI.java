@@ -3,9 +3,7 @@ package com.abeltramo.twsuggestions;
 import twitter4j.*;
 import twitter4j.conf.ConfigurationBuilder;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -14,7 +12,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class TwitterAPI {
     private static final int maxTweet       = 200;        // This should not be changed
-    private static final int maxPages       = 10;         // max 2000 tweet per user
+    private static final int maxPages       = 15;         // max 3000 tweet per user
     private static final int maxUserPerPage = 200;        // This value is the maximum possible
     private TwitterFactory _tf;
     private Twitter _tw;
@@ -36,6 +34,7 @@ public class TwitterAPI {
             int prevStatLength;
             for(int i=1;i<=maxPages;i++) {
                 prevStatLength = statuses.size();
+                checkAPICall("/statuses/user_timeline");
                 statuses.addAll(_tw.getUserTimeline(user, new Paging(i, maxTweet)));
                 if(statuses.size() == prevStatLength)                           // if there is no more tweet to crawl
                     break;                                                      // exit
@@ -51,7 +50,8 @@ public class TwitterAPI {
         ArrayList<String> friendsIDs = new ArrayList<>();
         try {
             ArrayList<Long> friends = getAllFriendsIDs(user);
-            for(Long id : friends){                                                 // For each following user
+            for(Long id : friends){                                                   // For each following user
+                checkAPICall("/users/show/:id");
                 friendsIDs.add(_tw.showUser(id).getScreenName());                    // Add to the result
             }
         } catch (TwitterException e) {
@@ -66,6 +66,7 @@ public class TwitterAPI {
         Long cursor = -1L;
         IDs ids = null;
 
+        checkAPICall("/users/show/:id");
         User curUser = _tw.showUser(user);
         // Take the min number of user
         if(curUser.getFollowersCount() < curUser.getFriendsCount()){
@@ -99,27 +100,49 @@ public class TwitterAPI {
         return friends;
     }
 
+    /*
+    * Following are methods to not reach the Twitter Limits
+    */
+
     private void checkAPICall(String windowName){
         try {
-            RateLimitStatus st = _tw.getRateLimitStatus().get(windowName);
-
-            System.out.println(windowName+": "+st.getRemaining());
-            if(st.getRemaining() <= 0){
-                int secondsRemaining = st.getSecondsUntilReset();
-                System.out.println("Limit reached at "+ getCurTime() + " waiting: "+ secondsRemaining / 60 +" seconds");
-                MainForm.msgbox("Twitter API limit reached for "+windowName+"\nWaiting "+ secondsRemaining +" sec","Twitter API limit reached");
-                try {
-                    TimeUnit.SECONDS.sleep(secondsRemaining/2);
-                    System.out.println("Half the time! " + getCurTime());
-                    TimeUnit.SECONDS.sleep(secondsRemaining/2 + 2);
-                    System.out.println("Restarting...");
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+            int curLimit = getCurLimit(windowName);
+            System.out.println(windowName+": "+curLimit);
+            if(curLimit <= 0){                                                  // Check
+                RateLimitStatus st = _tw.getRateLimitStatus().get(windowName);
+                if(st.getRemaining() <= 0) {                                    // Double check
+                    int secondsRemaining = st.getSecondsUntilReset();
+                    System.out.println("Limit reached at " + getCurTime() + " waiting: " + secondsRemaining / 60 + " seconds");
+                    MainForm.msgbox("Twitter API limit reached for " + windowName + "\nWaiting " + secondsRemaining + " sec", "Twitter API limit reached");
+                    try {
+                        TimeUnit.SECONDS.sleep(secondsRemaining / 2);
+                        System.out.println("Half the time! " + getCurTime());
+                        TimeUnit.SECONDS.sleep(secondsRemaining / 2 + 2);
+                        System.out.println("Restarting...");
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
+                _limitCache = null;                                         // In either cases the cache is no longer valid
             }
         } catch (TwitterException e) {
             e.printStackTrace();
         }
+    }
+
+    private HashMap<String,Integer> _limitCache = null;
+    private int getCurLimit(String windowName) throws TwitterException{
+        if(_limitCache == null){
+            _limitCache = new HashMap<String,Integer>();
+           Map<String,RateLimitStatus> limits =  _tw.getRateLimitStatus();
+           for(Map.Entry<String, RateLimitStatus> limit : limits.entrySet()){
+            _limitCache.put(limit.getKey(),limit.getValue().getRemaining());
+           }
+        }
+        int oldValue = _limitCache.get(windowName);
+        oldValue--;
+        _limitCache.put(windowName,oldValue);
+        return oldValue;
     }
 
     private String getCurTime(){
