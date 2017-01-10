@@ -11,7 +11,7 @@
     <clientProperties>
       <html.disable class="java.lang.Boolean" value="false"/>
     </clientProperties>
-    <border type="empty" title="Twitter Suggestions" title-justification="2" title-position="2">
+    <border type="empty">
       <size top="20" left="20" bottom="20" right="20"/>
     </border>
     <children>

@@ -6,6 +6,7 @@ import com.abeltramo.lucene.IndexTweet;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 /**
  * twitter-suggestions
@@ -21,6 +22,7 @@ public class MainForm {
     private JCheckBox ChkFriends;
 
     public MainForm() {
+        MainForm _this = this;
         searchBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -29,16 +31,18 @@ public class MainForm {
                 boolean useCache = ChkUseCache.isSelected();
                 boolean useFriends = ChkFriends.isSelected();
                 IndexTweet itw = new IndexTweet();
-                TwManager twmanager = new TwManager(useCache);
+                TwManager twmanager = new TwManager(useCache,_this);
 
-                new Thread(new Runnable() {
+                Runnable R = new Runnable() {
                     public void run() {
                         notifyUser(10,"Indexing @" + user + " tweet");
                         itw.makeIndex(twmanager.getUserPost(user),1.5f);
                         if(useFriends) {
                             notifyUser(20, "Getting @" + user + " friend list");
-                            for (String friend : twmanager.getUserFriend(user)) {
-                                notifyUser(30, "Getting @" + friend + " tweet");
+                            ArrayList<String> friends = twmanager.getUserFriend(user);
+                            for (int i = 1; i<= friends.size(); i++) {
+                                String friend = friends.get(i);
+                                notifyUser(30, "Getting "+ i +"/"+ friends.size() + " @" + friend + " tweets");
                                 itw.makeIndex(twmanager.getUserPost(friend), 1.0f);
                             }
                         }
@@ -53,7 +57,10 @@ public class MainForm {
                         notifyUser(100,"Completed");
                         completedBackground();
                     }
-                }).start();
+                };
+
+                Thread T = new Thread(R);
+                T.start();
             }
         });
     }
@@ -72,6 +79,7 @@ public class MainForm {
         SwingUtilities.invokeLater(new Runnable() {
            public void run() {
                progressBar.setVisible(true);
+               progressBar.setIndeterminate(false);
                progressBar.setValue(progress);
                Status.setVisible(true);
                Status.setText(status);
@@ -79,8 +87,19 @@ public class MainForm {
        });
     }
 
+    public void notifyWaiting(String status){
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                progressBar.setVisible(true);
+                progressBar.setIndeterminate(true);
+                Status.setVisible(true);
+                Status.setText(status);
+            }
+        });
+    }
+
     public static void main(String[] args) {
-        JFrame frame = new JFrame("MainForm");
+        JFrame frame = new JFrame("Twitter suggestions");
         frame.setContentPane(new MainForm().panel1);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();

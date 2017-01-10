@@ -16,8 +16,10 @@ public class TwitterAPI {
     private static final int maxUserPerPage = 200;        // This value is the maximum possible
     private TwitterFactory _tf;
     private Twitter _tw;
+    private MainForm _mform;
 
-    public TwitterAPI() {
+    public TwitterAPI(MainForm form) {
+        _mform = form;
         ConfigurationBuilder cb = new ConfigurationBuilder();
         cb.setDebugEnabled(true)
                 .setOAuthConsumerKey("kGCmUSjwceYb3HJXu8AlcrX0O")
@@ -90,7 +92,7 @@ public class TwitterAPI {
             } while(ids.hasNext());
         }   // Finish this I have a list of follower or friends
             // I have to check if they are also on the other list
-        for(Long id : ids.getIDs() ){
+        for(Long id : tmp){
             checkAPICall("/friendships/show");
             Relationship rel = _tw.showFriendship(curUser.getId(),id);
             if(rel.isSourceFollowedByTarget() && rel.isSourceFollowingTarget()){
@@ -107,18 +109,17 @@ public class TwitterAPI {
     private void checkAPICall(String windowName){
         try {
             int curLimit = getCurLimit(windowName);
-            System.out.println(windowName+": "+curLimit);
             if(curLimit <= 0){                                                  // Check
                 RateLimitStatus st = _tw.getRateLimitStatus().get(windowName);
                 if(st.getRemaining() <= 0) {                                    // Double check
                     int secondsRemaining = st.getSecondsUntilReset();
-                    System.out.println("Limit reached at " + getCurTime() + " waiting: " + secondsRemaining / 60 + " seconds");
-                    MainForm.msgbox("Twitter API limit reached for " + windowName + "\nWaiting " + secondsRemaining + " sec", "Twitter API limit reached");
                     try {
-                        TimeUnit.SECONDS.sleep(secondsRemaining / 2);
-                        System.out.println("Half the time! " + getCurTime());
-                        TimeUnit.SECONDS.sleep(secondsRemaining / 2 + 2);
-                        System.out.println("Restarting...");
+                        int steps = 20;
+                        for(int i=0;i<steps;i++){
+                            int realSecRemaining = secondsRemaining - ((secondsRemaining / steps) * i);
+                            _mform.notifyWaiting(windowName+" API limit, waiting: " + realSecRemaining + " seconds");
+                            TimeUnit.SECONDS.sleep(secondsRemaining / steps);
+                        }
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -143,12 +144,5 @@ public class TwitterAPI {
         oldValue--;
         _limitCache.put(windowName,oldValue);
         return oldValue;
-    }
-
-    private String getCurTime(){
-        Calendar rightNow = Calendar.getInstance();
-        int hour = rightNow.get(Calendar.HOUR_OF_DAY);
-        int minutes = rightNow.get(Calendar.MINUTE);
-        return hour+":"+minutes;
     }
 }

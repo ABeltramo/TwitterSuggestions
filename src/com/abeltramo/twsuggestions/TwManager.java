@@ -14,8 +14,8 @@ public class TwManager {
     private boolean _useCache;
     private TwitterAPI _twa;
 
-    public TwManager(boolean useCache){
-        _twa = new TwitterAPI();
+    public TwManager(boolean useCache,MainForm form){
+        _twa = new TwitterAPI(form);
         _useCache = useCache;
         _cm = new CacheManager();
     }
