@@ -51,7 +51,7 @@ public class CompareIndex {
         return terms;
     }
 
-    public TopDocs queryNews(TermStats[] topTerms,int numResult){
+    public Document[] queryNews(TermStats[] topTerms,int numResult){
         IndexSearcher newsSearcher = new IndexSearcher(_nwReader);
         String query = "";
 
@@ -68,22 +68,21 @@ public class CompareIndex {
 
         QueryParser qParser = new QueryParser("title", new EnglishAnalyzer());
         TopDocs result = null;
+        Document[] docs = null;
         try {
             Query q = qParser.parse(query);
             result = newsSearcher.search(q,numResult);
 
             ScoreDoc[] resultList = result.scoreDocs; //array of doc ids and their ranking
+            docs = new Document[resultList.length];
             for(int i = 0; i<resultList.length; i++){
-                Document book = newsSearcher.doc(resultList[i].doc);
-                String newsTitle = book.getField("title").stringValue();
-                String newsDescription = book.getField("description").stringValue();
-                System.out.println(newsTitle + ": " + newsDescription + "\n");
+                docs[i] = newsSearcher.doc(resultList[i].doc);
             }
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        return result;
+        return docs;
     }
 }

@@ -9,6 +9,7 @@ import org.apache.lucene.analysis.miscellaneous.LengthFilter;
 import org.apache.lucene.analysis.pattern.PatternReplaceFilter;
 import org.apache.lucene.analysis.shingle.ShingleFilter;
 import org.apache.lucene.analysis.standard.StandardFilter;
+import org.apache.lucene.analysis.standard.StandardTokenizer;
 
 import java.util.Arrays;
 import java.util.regex.Pattern;
@@ -25,7 +26,7 @@ public class TwitterAnalizer extends Analyzer {
     }
 
     protected TokenStreamComponents createComponents(String field) {
-        final Tokenizer tokenizer = new WhitespaceTokenizer();
+        final Tokenizer tokenizer = new StandardTokenizer();
         TokenStream result = new StandardFilter(tokenizer);
 
 

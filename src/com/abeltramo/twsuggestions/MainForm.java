@@ -3,6 +3,7 @@ package com.abeltramo.twsuggestions;
 import com.abeltramo.lucene.CompareIndex;
 import com.abeltramo.lucene.IndexNews;
 import com.abeltramo.lucene.IndexTweet;
+import org.apache.lucene.document.Document;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.misc.TermStats;
 
@@ -23,6 +24,7 @@ public class MainForm {
     private JLabel Status;
     private JCheckBox ChkUseCache;
     private JCheckBox ChkFriends;
+    private JTable resultTable;
 
     public MainForm() {
         MainForm _this = this;
@@ -40,7 +42,7 @@ public class MainForm {
                 // NEWS
                 IndexNews inw = new IndexNews();
                 NewsManager nwmanager = new NewsManager(useCache);
-                // COMPARE both result
+                // COMPARE both resultTable
                 CompareIndex cpi = new CompareIndex();
 
                 Runnable R = new Runnable() {
@@ -61,10 +63,12 @@ public class MainForm {
                         notifyUser(50,"Getting news");
                         inw.makeIndex(nwmanager.getAllNews());
 
-                        cpi.queryNews(cpi.getTopTwitterTerms(50),10);
+                        notifyUser(70,"Lucene Query");
+                        TermStats[] topTweet = cpi.getTopTwitterTerms(50);
+                        Document[] result = cpi.queryNews(topTweet,10);
 
                         notifyUser(100,"Completed");
-                        completedBackground();
+                        completedBackground(result);
                     }
                 };
 
@@ -74,12 +78,16 @@ public class MainForm {
         });
     }
 
-    private void completedBackground(){
+    private void completedBackground(Document[] result){
+        MainForm _this = this;
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 progressBar.setVisible(false);
                 Status.setVisible(false);
                 searchBtn.setEnabled(true);
+
+                resultTable.setModel(new ResultTable(10,result));
+                resultTable.setVisible(true);
             }
         });
     }
@@ -114,5 +122,9 @@ public class MainForm {
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
+    }
+
+    private void createUIComponents() {
+        resultTable = new JTable(new ResultTable(0,null));
     }
 }
