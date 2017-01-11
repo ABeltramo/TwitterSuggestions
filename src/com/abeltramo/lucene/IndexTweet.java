@@ -9,6 +9,7 @@ import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.store.RAMDirectory;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,13 +23,8 @@ public class IndexTweet {
     private File luceneDir;
     private IndexWriter iwriter = null;
 
-    public IndexTweet(){
-        String path = "Lucene" + File.separator + "Tweet";
-        new File("Lucene").mkdir();                 // Create base directory if not exists
-        luceneDir  = new File(path);
-        luceneDir.mkdir();                                    // Create news directory if not exists
+    public IndexTweet(RAMDirectory directory){
         try {
-            Directory directory = FSDirectory.open(luceneDir.toPath());
             TwitterAnalizer analyzer = new TwitterAnalizer();
             IndexWriterConfig config = new IndexWriterConfig(analyzer);
             config.setOpenMode(IndexWriterConfig.OpenMode.CREATE);

@@ -9,6 +9,7 @@ import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.store.RAMDirectory;
 import twitter4j.JSONArray;
 import twitter4j.JSONException;
 import twitter4j.JSONObject;
@@ -23,24 +24,19 @@ import java.util.ArrayList;
  */
 public class IndexNews {
 
-    private File luceneDir;
+    private RAMDirectory _newsDir;
 
-    public IndexNews(){
-        String path = "Lucene" + File.separator + "News";
-        new File("Lucene").mkdir();                 // Create base directory if not exists
-        luceneDir  = new File(path);
-        luceneDir.mkdir();                                    // Create news directory if not exists
+    public IndexNews(RAMDirectory newsDir){
+        _newsDir = newsDir;
     }
 
     public void makeIndex(ArrayList<JSONObject> docs){
-        Directory directory = null;
         IndexWriter iwriter = null;
         try {
-            directory = FSDirectory.open(luceneDir.toPath());
             StandardAnalyzer analyzer = new StandardAnalyzer();
             IndexWriterConfig config = new IndexWriterConfig(analyzer);
             config.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
-            iwriter = new IndexWriter(directory, config);
+            iwriter = new IndexWriter(_newsDir, config);
 
             for (JSONObject ObjSource : docs) {
                 try {

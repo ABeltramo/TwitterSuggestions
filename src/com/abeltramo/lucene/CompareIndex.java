@@ -13,6 +13,7 @@ import org.apache.lucene.search.similarities.ClassicSimilarity;
 import org.apache.lucene.search.similarities.TFIDFSimilarity;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
+import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.util.BytesRef;
 import twitter4j.RateLimitStatus;
 
@@ -30,12 +31,10 @@ public class CompareIndex {
     private IndexReader _nwReader;
     private final String _field = "tweet";
 
-    public CompareIndex(){
+    public CompareIndex(RAMDirectory tweetDirectory, RAMDirectory newsDirectory){
         try{
-            Directory directory = FSDirectory.open(new File("Lucene" + File.separator + "Tweet").toPath());
-            _twReader = DirectoryReader.open(directory);
-            directory = FSDirectory.open(new File("Lucene" + File.separator + "News").toPath());
-            _nwReader = DirectoryReader.open(directory);
+            _twReader = StandardDirectoryReader.open(tweetDirectory);
+            _nwReader = StandardDirectoryReader.open(newsDirectory);
         } catch (IOException e) {
             e.printStackTrace();
         }

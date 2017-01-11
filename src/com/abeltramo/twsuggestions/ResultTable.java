@@ -24,7 +24,8 @@ public class ResultTable extends AbstractTableModel {
     // ritorna il contenuto di una cella
     public Object getValueAt(int row, int col)
     {
-        Document curDoc = _docs[row];
+        // Inverted here!
+        Document curDoc = _docs[_rows-row-1];
         switch (col) {
             case 0: return curDoc.getField("source").stringValue();
             case 1: return curDoc.getField("title").stringValue();

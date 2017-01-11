@@ -6,6 +6,7 @@ import com.abeltramo.lucene.IndexTweet;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.misc.TermStats;
+import org.apache.lucene.store.RAMDirectory;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -37,13 +38,13 @@ public class MainForm {
                 boolean useCache = ChkUseCache.isSelected();
                 boolean useFriends = ChkFriends.isSelected();
                 // TWEET
-                IndexTweet itw = new IndexTweet();
+                RAMDirectory tweetDir = new RAMDirectory();
+                IndexTweet itw = new IndexTweet(tweetDir);
                 TwManager twmanager = new TwManager(useCache,_this);
                 // NEWS
-                IndexNews inw = new IndexNews();
+                RAMDirectory newsDir = new RAMDirectory();
+                IndexNews inw = new IndexNews(newsDir);
                 NewsManager nwmanager = new NewsManager(useCache);
-                // COMPARE both resultTable
-                CompareIndex cpi = new CompareIndex();
 
                 Runnable R = new Runnable() {
                     public void run() {
@@ -64,6 +65,8 @@ public class MainForm {
                         inw.makeIndex(nwmanager.getAllNews());
 
                         notifyUser(70,"Lucene Query");
+                        // COMPARE both resultTable
+                        CompareIndex cpi = new CompareIndex(tweetDir,newsDir);
                         TermStats[] topTweet = cpi.getTopTwitterTerms(50);
                         Document[] result = cpi.queryNews(topTweet,10);
 
