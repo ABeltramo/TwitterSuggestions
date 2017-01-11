@@ -24,25 +24,16 @@
           <text value="Search"/>
         </properties>
       </component>
-      <component id="dd0ba" class="javax.swing.JTextField" binding="txtUser">
-        <constraints>
-          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
-          <gridbag weightx="0.0" weighty="0.0"/>
-        </constraints>
-        <properties>
-          <columns value="12"/>
-          <horizontalAlignment value="10"/>
-          <text value="@realDonaldTrump"/>
-          <toolTipText value="@user"/>
-        </properties>
-      </component>
       <component id="8f9b3" class="javax.swing.JLabel" binding="Status">
         <constraints>
-          <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="3" column="0" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
           <gridbag weightx="0.0" weighty="0.0"/>
         </constraints>
         <properties>
           <enabled value="true"/>
+          <font size="11"/>
+          <maximumSize width="280" height="16"/>
+          <preferredSize width="270" height="16"/>
           <text value="Label"/>
           <visible value="false"/>
         </properties>
@@ -76,6 +67,17 @@
         <properties>
           <selected value="true"/>
           <text value="Include Friends"/>
+        </properties>
+      </component>
+      <component id="dd0ba" class="javax.swing.JTextField" binding="txtUser">
+        <constraints>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+          <gridbag weightx="0.0" weighty="0.0"/>
+        </constraints>
+        <properties>
+          <horizontalAlignment value="10"/>
+          <text value="@realDonaldTrump"/>
+          <toolTipText value="@user"/>
         </properties>
       </component>
     </children>

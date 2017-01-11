@@ -26,12 +26,17 @@ public class MainForm {
         searchBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                // USER Preferences
                 searchBtn.setEnabled(false);
                 String user = txtUser.getText().replace("@","");
                 boolean useCache = ChkUseCache.isSelected();
                 boolean useFriends = ChkFriends.isSelected();
+                // TWEET
                 IndexTweet itw = new IndexTweet();
                 TwManager twmanager = new TwManager(useCache,_this);
+                // NEWS
+                IndexNews inw = new IndexNews();
+                NewsManager nwmanager = new NewsManager(useCache);
 
                 Runnable R = new Runnable() {
                     public void run() {
@@ -40,19 +45,16 @@ public class MainForm {
                         if(useFriends) {
                             notifyUser(20, "Getting @" + user + " friend list");
                             ArrayList<String> friends = twmanager.getUserFriend(user);
-                            for (int i = 1; i<= friends.size(); i++) {
+                            for (int i = 0; i< friends.size(); i++) {
                                 String friend = friends.get(i);
-                                notifyUser(30, "Getting "+ i +"/"+ friends.size() + " @" + friend + " tweets");
+                                notifyUser(30, "Getting "+ (i+1) +"/"+ friends.size() + " @" + friend + " tweets");
                                 itw.makeIndex(twmanager.getUserPost(friend), 1.0f);
                             }
                         }
                         itw.closeWrite();
 
                         notifyUser(50,"Getting news");
-                        NewsManager nwmanager = new NewsManager(useCache);
-                        IndexNews inw = new IndexNews();
                         inw.makeIndex(nwmanager.getAllNews());
-
 
                         notifyUser(100,"Completed");
                         completedBackground();
@@ -105,9 +107,5 @@ public class MainForm {
         frame.pack();
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
-    }
-
-    public static void msgbox(String message,String title){
-        JOptionPane.showMessageDialog(null, message,title,JOptionPane.WARNING_MESSAGE);
     }
 }

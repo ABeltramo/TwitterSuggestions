@@ -114,12 +114,18 @@ public class TwitterAPI {
                 if(st.getRemaining() <= 0) {                                    // Double check
                     int secondsRemaining = st.getSecondsUntilReset();
                     try {
-                        int steps = 20;
+                        int steps = 40;
+                        int realSecRemaining;
                         for(int i=0;i<steps;i++){
-                            int realSecRemaining = secondsRemaining - ((secondsRemaining / steps) * i);
+                            realSecRemaining = secondsRemaining - ((secondsRemaining / steps) * i);
                             _mform.notifyWaiting(windowName+" API limit, waiting: " + realSecRemaining + " seconds");
                             TimeUnit.SECONDS.sleep(secondsRemaining / steps);
                         }
+                        st = _tw.getRateLimitStatus().get(windowName);
+                        realSecRemaining = st.getSecondsUntilReset();  // Counting the module of steps
+                        _mform.notifyWaiting(windowName+" API limit, waiting: " + realSecRemaining + " seconds");
+                        TimeUnit.SECONDS.sleep(realSecRemaining+1);
+                        _mform.notifyWaiting("Restarting...");
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

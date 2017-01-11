@@ -57,11 +57,11 @@ public class TwitterFilter extends TokenFilter {
                                                     .toString();                            // Get current token string
 
 
-            if(!currentTokenInStream.contains("@")){                                    // Check if it has a @ inside
-                if(!currentTokenInStream.contains("http")) {                            // Check if it is a URL
-                    nextToken = currentTokenInStream;                                   // Save the token as valid
-                }
-            }
+            if(!currentTokenInStream.contains("@"))                                     // Check if it has a @ inside
+                if(!currentTokenInStream.contains("http"))                              // Check if it is a URL
+                    if(!currentTokenInStream.contains("&#"))                            // Remove HTML strings
+                        nextToken = currentTokenInStream;                               // Save the token as valid
+
         }
 
         // Save the current token
