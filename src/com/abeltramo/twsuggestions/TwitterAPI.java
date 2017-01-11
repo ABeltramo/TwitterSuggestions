@@ -121,10 +121,7 @@ public class TwitterAPI {
                             _mform.notifyWaiting(windowName+" API limit, waiting: " + realSecRemaining + " seconds");
                             TimeUnit.SECONDS.sleep(secondsRemaining / steps);
                         }
-                        st = _tw.getRateLimitStatus().get(windowName);
-                        realSecRemaining = st.getSecondsUntilReset();  // Counting the module of steps
-                        _mform.notifyWaiting(windowName+" API limit, waiting: " + realSecRemaining + " seconds");
-                        TimeUnit.SECONDS.sleep(realSecRemaining+1);
+                        TimeUnit.SECONDS.sleep((secondsRemaining % steps) + 3); // Security measure
                         _mform.notifyWaiting("Restarting...");
                     } catch (InterruptedException e) {
                         e.printStackTrace();

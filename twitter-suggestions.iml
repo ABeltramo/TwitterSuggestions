@@ -14,5 +14,6 @@
     <orderEntry type="library" name="okhttp-3.5.0" level="project" />
     <orderEntry type="library" name="okio-1.11.0" level="project" />
     <orderEntry type="library" name="lucene-analyzers-common-6.2.1" level="project" />
+    <orderEntry type="library" name="lucene-misc-6.2.1" level="project" />
   </component>
 </module>

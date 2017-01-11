@@ -1,7 +1,10 @@
 package com.abeltramo.twsuggestions;
 
+import com.abeltramo.lucene.CompareIndex;
 import com.abeltramo.lucene.IndexNews;
 import com.abeltramo.lucene.IndexTweet;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.misc.TermStats;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -37,6 +40,8 @@ public class MainForm {
                 // NEWS
                 IndexNews inw = new IndexNews();
                 NewsManager nwmanager = new NewsManager(useCache);
+                // COMPARE both result
+                CompareIndex cpi = new CompareIndex();
 
                 Runnable R = new Runnable() {
                     public void run() {
@@ -55,6 +60,8 @@ public class MainForm {
 
                         notifyUser(50,"Getting news");
                         inw.makeIndex(nwmanager.getAllNews());
+
+                        cpi.queryNews(cpi.getTopTwitterTerms(50),10);
 
                         notifyUser(100,"Completed");
                         completedBackground();
