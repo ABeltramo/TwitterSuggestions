@@ -28,36 +28,66 @@ import java.util.*;
  */
 public class CompareIndex {
     private IndexReader _twReader;
+    private IndexReader _frReader;
     private IndexReader _nwReader;
     private final String _field = "tweet";
 
-    public CompareIndex(RAMDirectory tweetDirectory, RAMDirectory newsDirectory){
+    public CompareIndex(Directory tweetDir, Directory friendDir, Directory newsDir){
         try{
-            _twReader = StandardDirectoryReader.open(tweetDirectory);
-            _nwReader = StandardDirectoryReader.open(newsDirectory);
+            _twReader = StandardDirectoryReader.open(tweetDir);
+            _frReader = StandardDirectoryReader.open(friendDir);
+            _nwReader = StandardDirectoryReader.open(newsDir);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public TermStats[] getTopTwitterTerms(int numTerms){
-        TermStats[] terms = null;
+    public ArrayList<String> getTopTwitterTerms(int numTerms, int numFriend){
+        Map<String,Integer> terms = new TreeMap<>();
+        HighFreqTerms.TotalTermFreqComparator comparator = new HighFreqTerms.TotalTermFreqComparator();
         try {
-            terms = HighFreqTerms.getHighFreqTerms(_twReader, numTerms, _field, new HighFreqTerms.TotalTermFreqComparator());
+            System.out.println("Top Terms user:");
+            for(TermStats term : HighFreqTerms.getHighFreqTerms(_twReader, numTerms/2, _field, comparator)){  // First: get user top terms
+                terms.put(term.termtext.utf8ToString(),term.docFreq * 2);                                               // terms[term] = docFreq * 2 (BOOST)
+                System.out.print(term.termtext.utf8ToString()+" ");                                                     // * DEBUG
+            }
+            System.out.println("\nTop Terms friend:");
+            TermStats[] friendTerms = HighFreqTerms.getHighFreqTerms(_frReader, numTerms, _field, comparator);          // Second: get friend top terms
+            for(TermStats term : friendTerms){
+                String termText = term.termtext.utf8ToString();
+                int curFreq = terms.getOrDefault(termText,0);
+                int newFreq = (term.docFreq / numFriend);                                                               // normalize the result
+                terms.put(termText,curFreq + newFreq);                                                                  // terms[term] += docFreq
+                System.out.print(termText+" ");                                                                         // * DEBUG
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return terms;
+        ArrayList<String> orderedResult = new ArrayList<>();                                                            // FASE 2: ordering result by docFreq
+        for(int i=0;i<numTerms;i++){                                                                                    // Maybe a better sorting than bubble sort?
+            int max = 0;
+            String key = "";
+            for(Map.Entry<String,Integer> term : terms.entrySet()){
+                if(term.getValue() > max){
+                    max = term.getValue();
+                    key = term.getKey();
+                }
+            }
+            orderedResult.add(key);                                                                                     // We have a winner, save it
+            terms.remove(key);                                                                                          // Remove the winner from the list
+        }
+
+        return orderedResult;
     }
 
-    public Document[] queryNews(TermStats[] topTerms,int numResult){
+    public Document[] queryNews(ArrayList<String> topTerms,int numResult){
         IndexSearcher newsSearcher = new IndexSearcher(_nwReader);
         String query = "";
 
-        int numTerms = topTerms.length;
+        int numTerms = topTerms.size();
         for(int i=0;i<numTerms;i++){
             int curBoost = (numTerms-i);
-            String curTerm = topTerms[i].termtext.utf8ToString();
+            String curTerm = topTerms.get(i);
             query = query.concat("(description:" + curTerm +
                                  ")^1." + curBoost +
                                  " (title:" + curTerm +

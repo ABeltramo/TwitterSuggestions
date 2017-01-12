@@ -21,41 +21,45 @@ import java.util.ArrayList;
  */
 public class IndexTweet {
     private File luceneDir;
-    private IndexWriter iwriter = null;
+    private IndexWriter userWriter = null;
+    private IndexWriter friendWriter = null;
 
-    public IndexTweet(RAMDirectory directory){
+    public IndexTweet(Directory userDir, Directory friendDir){
         try {
             TwitterAnalizer analyzer = new TwitterAnalizer();
-            IndexWriterConfig config = new IndexWriterConfig(analyzer);
-            config.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
-            iwriter = new IndexWriter(directory, config);
+            userWriter = new IndexWriter(userDir, new IndexWriterConfig(analyzer));
+            friendWriter = new IndexWriter(friendDir, new IndexWriterConfig(analyzer));
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void makeIndex(ArrayList<String> tweets, float boost){
+    public void makeIndex(ArrayList<String> tweets, boolean user){
         try {
             for (String tw : tweets) {
-                iwriter.addDocument(creaDoc(tw, boost));
+                if(user)
+                    userWriter.addDocument(creaDoc(tw));
+                else
+                    friendWriter.addDocument(creaDoc(tw));
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private Document creaDoc(String tweet, float boost){
+    private Document creaDoc(String tweet){
         Document doc = new Document();
         Field Ftweet = new TextField("tweet", tweet, Field.Store.YES);
-        Ftweet.setBoost(boost);
         doc.add(Ftweet);
         return doc;
     }
 
     public void closeWrite(){
         try{
-            iwriter.commit();
-            iwriter.close();
+            userWriter.commit();
+            userWriter.close();
+            friendWriter.commit();
+            friendWriter.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

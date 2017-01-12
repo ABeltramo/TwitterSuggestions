@@ -39,7 +39,8 @@ public class MainForm {
                 boolean useFriends = ChkFriends.isSelected();
                 // TWEET
                 RAMDirectory tweetDir = new RAMDirectory();
-                IndexTweet itw = new IndexTweet(tweetDir);
+                RAMDirectory friendDir = new RAMDirectory();
+                IndexTweet itw = new IndexTweet(tweetDir,friendDir);
                 TwManager twmanager = new TwManager(useCache,_this);
                 // NEWS
                 RAMDirectory newsDir = new RAMDirectory();
@@ -48,15 +49,16 @@ public class MainForm {
 
                 Runnable R = new Runnable() {
                     public void run() {
+                        ArrayList<String> friends = new ArrayList<>();
                         notifyUser(10,"Indexing @" + user + " tweet");
-                        itw.makeIndex(twmanager.getUserPost(user),1.5f);
+                        itw.makeIndex(twmanager.getUserPost(user),true);
                         if(useFriends) {
                             notifyUser(20, "Getting @" + user + " friend list");
-                            ArrayList<String> friends = twmanager.getUserFriend(user);
+                            friends = twmanager.getUserFriend(user);
                             for (int i = 0; i< friends.size(); i++) {
                                 String friend = friends.get(i);
                                 notifyUser(30, "Getting "+ (i+1) +"/"+ friends.size() + " @" + friend + " tweets");
-                                itw.makeIndex(twmanager.getUserPost(friend), 1.0f);
+                                itw.makeIndex(twmanager.getUserPost(friend), false);
                             }
                         }
                         itw.closeWrite();
@@ -66,9 +68,9 @@ public class MainForm {
 
                         notifyUser(70,"Lucene Query");
                         // COMPARE both resultTable
-                        CompareIndex cpi = new CompareIndex(tweetDir,newsDir);
-                        TermStats[] topTweet = cpi.getTopTwitterTerms(50);
-                        Document[] result = cpi.queryNews(topTweet,10);
+                        CompareIndex cpi = new CompareIndex(tweetDir,friendDir,newsDir);
+                        Document[] result = cpi.queryNews(cpi.getTopTwitterTerms(50,friends.size()),
+                                                         10);
 
                         notifyUser(100,"Completed");
                         completedBackground(result);
