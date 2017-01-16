@@ -102,7 +102,7 @@
             <properties>
               <columns value="13"/>
               <opaque value="true"/>
-              <text value="@realDonaldTrump"/>
+              <text value=""/>
               <toolTipText value="@user"/>
             </properties>
           </component>

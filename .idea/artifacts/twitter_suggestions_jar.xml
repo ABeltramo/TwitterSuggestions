@@ -1,0 +1,16 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="twitter-suggestions:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/twitter_suggestions_jar</output-path>
+    <root id="archive" name="twitter-suggestions.jar">
+      <element id="module-output" name="twitter-suggestions" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/API/lucene-6.2.1/core/lucene-core-6.2.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/API/lucene-6.2.1/queryparser/lucene-queryparser-6.2.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/API/lucene-6.2.1/queries/lucene-queries-6.2.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/API/Twitter4J/twitter4j-core-4.0.4.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/API/lucene-6.2.1/analysis/common/lucene-analyzers-common-6.2.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/API/okhttp/okio-1.11.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/API/lucene-6.2.1/misc/lucene-misc-6.2.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/API/okhttp/okhttp-3.5.0.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
