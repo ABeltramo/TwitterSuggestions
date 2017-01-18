@@ -1,7 +1,6 @@
 package com.abeltramo.lucene;
 
 import org.apache.lucene.analysis.en.EnglishAnalyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.misc.TermStats;
 import org.apache.lucene.index.*;
@@ -9,17 +8,9 @@ import org.apache.lucene.misc.HighFreqTerms;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.*;
-import org.apache.lucene.search.similarities.ClassicSimilarity;
-import org.apache.lucene.search.similarities.TFIDFSimilarity;
 import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.FSDirectory;
-import org.apache.lucene.store.RAMDirectory;
-import org.apache.lucene.util.BytesRef;
-import twitter4j.RateLimitStatus;
 
-import java.io.File;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -47,18 +38,20 @@ public class CompareIndex {
         HighFreqTerms.TotalTermFreqComparator comparator = new HighFreqTerms.TotalTermFreqComparator();
         try {
             System.out.println("Top Terms user:");
-            for(TermStats term : HighFreqTerms.getHighFreqTerms(_twReader, numTerms/2, _field, comparator)){  // First: get user top terms
-                terms.put(term.termtext.utf8ToString(),term.docFreq * 2);                                               // terms[term] = docFreq * 2 (BOOST)
-                System.out.print(term.termtext.utf8ToString()+" ");                                                     // * DEBUG
+            for(TermStats term : HighFreqTerms.getHighFreqTerms(_twReader, numTerms, _field, comparator)){              // First: get user top terms
+                terms.put(term.termtext.utf8ToString(),term.docFreq);                                                   // terms[term] = docFreq * 2 (BOOST)
+                System.out.print(term.termtext.utf8ToString()+" " + term.docFreq + " ");                                // * DEBUG
             }
             System.out.println("\nTop Terms friend:");
-            TermStats[] friendTerms = HighFreqTerms.getHighFreqTerms(_frReader, numTerms, _field, comparator);          // Second: get friend top terms
-            for(TermStats term : friendTerms){
-                String termText = term.termtext.utf8ToString();
-                int curFreq = terms.getOrDefault(termText,0);
-                int newFreq = (term.docFreq / numFriend);                                                               // normalize the result
-                terms.put(termText,curFreq + newFreq);                                                                  // terms[term] += docFreq
-                System.out.print(termText+" ");                                                                         // * DEBUG
+            if(numFriend > 0) {
+                TermStats[] friendTerms = HighFreqTerms.getHighFreqTerms(_frReader, numTerms, _field, comparator);      // Second: get friend top terms
+                for (TermStats term : friendTerms) {
+                    String termText = term.termtext.utf8ToString();
+                    int curFreq = terms.getOrDefault(termText, 0);
+                    int newFreq = (term.docFreq / numFriend);                                                           // normalize the result
+                    terms.put(termText, curFreq + newFreq);                                                             // terms[term] += docFreq
+                    System.out.print(termText + " " + newFreq + " ");                                                   // * DEBUG
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -11,9 +11,9 @@ import java.util.concurrent.TimeUnit;
  * Created by ABeltramo on 28/12/16.
  */
 public class TwitterAPI {
-    private static final int maxTweet       = 200;        // This should not be changed
-    private static final int maxPages       = 15;         // max 3000 tweet per user
-    private static final int maxUserPerPage = 200;        // This value is the maximum possible
+    private static final int maxTweet       = 200;         // This should not be changed
+    private static final int maxPages       = 15;          // max 3000 tweet per user
+    private static final int maxUserPerPage = 5000;        // This value is the maximum possible
     private TwitterFactory _tf;
     private Twitter _tw;
     private MainForm _mform;

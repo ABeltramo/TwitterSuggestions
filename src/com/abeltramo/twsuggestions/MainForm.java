@@ -4,8 +4,6 @@ import com.abeltramo.lucene.CompareIndex;
 import com.abeltramo.lucene.IndexNews;
 import com.abeltramo.lucene.IndexTweet;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.index.Term;
-import org.apache.lucene.misc.TermStats;
 import org.apache.lucene.store.RAMDirectory;
 
 import javax.swing.*;
@@ -69,7 +67,7 @@ public class MainForm {
                         notifyUser(70,"Lucene Query");
                         // COMPARE both resultTable
                         CompareIndex cpi = new CompareIndex(tweetDir,friendDir,newsDir);
-                        Document[] result = cpi.queryNews(cpi.getTopTwitterTerms(50,friends.size()),
+                        Document[] result = cpi.queryNews(cpi.getTopTwitterTerms(75,friends.size()),
                                                          10);
 
                         notifyUser(100,"Completed");
@@ -97,7 +95,7 @@ public class MainForm {
         });
     }
 
-    private void notifyUser(int progress, String status){
+    private void notifyUser(int progress, String status){   // Called to update the progressbar
         SwingUtilities.invokeLater(new Runnable() {
            public void run() {
                progressBar.setVisible(true);
@@ -109,7 +107,7 @@ public class MainForm {
        });
     }
 
-    public void notifyWaiting(String status){
+    public void notifyWaiting(String status){               // Called when we hit the Twitter API limit
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 progressBar.setVisible(true);
