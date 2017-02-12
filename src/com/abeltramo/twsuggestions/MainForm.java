@@ -27,51 +27,47 @@ public class MainForm {
 
     public MainForm() {
         MainForm _this = this;
-        searchBtn.addActionListener(new ActionListener() {
+        searchBtn.addActionListener(new ActionListener() {                                          // On start button click
             @Override
             public void actionPerformed(ActionEvent e) {
-                // USER Preferences
-                searchBtn.setEnabled(false);
-                String user = txtUser.getText().replace("@","");
-                boolean useCache = ChkUseCache.isSelected();
-                boolean useFriends = ChkFriends.isSelected();
-                // TWEET
-                RAMDirectory tweetDir = new RAMDirectory();
-                RAMDirectory friendDir = new RAMDirectory();
-                IndexTweet itw = new IndexTweet(tweetDir,friendDir);
-                TwManager twmanager = new TwManager(useCache,_this);
-                // NEWS
-                RAMDirectory newsDir = new RAMDirectory();
-                IndexNews inw = new IndexNews(newsDir);
-                NewsManager nwmanager = new NewsManager(useCache);
+                searchBtn.setEnabled(false);                                                        //  *
+                String user = txtUser.getText().replace("@","");                                    // Getting user
+                boolean useCache = ChkUseCache.isSelected();                                        // preferences from GUI
+                boolean useFriends = ChkFriends.isSelected();                                       //  *
+                RAMDirectory tweetDir = new RAMDirectory();                                         //  *
+                RAMDirectory friendDir = new RAMDirectory();                                        // Initialize Twitter
+                IndexTweet itw = new IndexTweet(tweetDir,friendDir);                                // objects
+                TwManager twmanager = new TwManager(useCache,_this);                                //  *
+                RAMDirectory newsDir = new RAMDirectory();                                          //  *
+                IndexNews inw = new IndexNews(newsDir);                                             // Initialize Index objects
+                NewsManager nwmanager = new NewsManager(useCache);                                  //  *
 
-                Runnable R = new Runnable() {
-                    public void run() {
-                        ArrayList<String> friends = new ArrayList<>();
+                Runnable R = new Runnable() {                                                       // Run in background
+                    public void run() {                                                             // to keep gui responsive
+                        ArrayList<String> friends = new ArrayList<>();                              // List of friends
                         notifyUser(10,"Indexing @" + user + " tweet");
-                        itw.makeIndex(twmanager.getUserPost(user),true);
-                        if(useFriends) {
+                        itw.makeIndex(twmanager.getUserPost(user),true);                      // Getting user posts from Twitter
+                        if(useFriends) {                                                            // If checkbox is selected
                             notifyUser(20, "Getting @" + user + " friend list");
-                            friends = twmanager.getUserFriend(user);
-                            for (int i = 0; i< friends.size(); i++) {
+                            friends = twmanager.getUserFriend(user);                                // Getting list of friends from Twitter
+                            for (int i = 0; i< friends.size(); i++) {                               // For each friend in list friend
                                 String friend = friends.get(i);
                                 notifyUser(30, "Getting "+ (i+1) +"/"+ friends.size() + " @" + friend + " tweets");
-                                itw.makeIndex(twmanager.getUserPost(friend), false);
+                                itw.makeIndex(twmanager.getUserPost(friend), false);          // Get post of i-friend
                             }
                         }
-                        itw.closeWrite();
+                        itw.closeWrite();                                                           // Close index twitter for writing
 
                         notifyUser(50,"Getting news");
-                        inw.makeIndex(nwmanager.getAllNews());
+                        inw.makeIndex(nwmanager.getAllNews());                                      // Create index for news
 
                         notifyUser(70,"Lucene Query");
-                        // COMPARE both resultTable
-                        CompareIndex cpi = new CompareIndex(tweetDir,friendDir,newsDir);
+                        CompareIndex cpi = new CompareIndex(tweetDir,friendDir,newsDir);            // COMPARE both resultTable
                         Document[] result = cpi.queryNews(cpi.getTopTwitterTerms(75,friends.size()),
-                                                         10);
+                                                         10);                             // Result contain the news that match
 
                         notifyUser(100,"Completed");
-                        completedBackground(result);
+                        completedBackground(result);                                                // Close the background task. We have finish
                     }
                 };
 
@@ -81,7 +77,7 @@ public class MainForm {
         });
     }
 
-    private void completedBackground(Document[] result){
+    private void completedBackground(Document[] result){                                            // When the background task is completed
         MainForm _this = this;
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
@@ -95,7 +91,7 @@ public class MainForm {
         });
     }
 
-    private void notifyUser(int progress, String status){   // Called to update the progressbar
+    private void notifyUser(int progress, String status){                                           // Called to update the progressbar
         SwingUtilities.invokeLater(new Runnable() {
            public void run() {
                progressBar.setVisible(true);
@@ -107,7 +103,7 @@ public class MainForm {
        });
     }
 
-    public void notifyWaiting(String status){               // Called when we hit the Twitter API limit
+    public void notifyWaiting(String status){                                                       // Called when we hit the Twitter API limit
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 progressBar.setVisible(true);
@@ -118,7 +114,7 @@ public class MainForm {
         });
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) {                                                        // Main: just initialize the GUI
         JFrame frame = new JFrame("Twitter suggestions");
         frame.setContentPane(new MainForm().panel1);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

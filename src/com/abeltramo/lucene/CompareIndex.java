@@ -74,11 +74,11 @@ public class CompareIndex {
     }
 
     public Document[] queryNews(ArrayList<String> topTerms,int numResult){
-        IndexSearcher newsSearcher = new IndexSearcher(_nwReader);
+        IndexSearcher newsSearcher = new IndexSearcher(_nwReader);                                                      // Using DefaultSimilarity (a specialization of TFIDFSimilarity)
         String query = "";
 
         int numTerms = topTerms.size();
-        for(int i=0;i<numTerms;i++){
+        for(int i=0;i<numTerms;i++){                                                                                    // Generating query with weight
             int curBoost = (numTerms-i);
             String curTerm = topTerms.get(i);
             query = query.concat("(description:" + curTerm +
@@ -95,7 +95,7 @@ public class CompareIndex {
             Query q = qParser.parse(query);
             result = newsSearcher.search(q,numResult);
 
-            ScoreDoc[] resultList = result.scoreDocs; //array of doc ids and their ranking
+            ScoreDoc[] resultList = result.scoreDocs;                                                                   //array of doc ids and their ranking
             docs = new Document[resultList.length];
             for(int i = 0; i<resultList.length; i++){
                 docs[i] = newsSearcher.doc(resultList[i].doc);
