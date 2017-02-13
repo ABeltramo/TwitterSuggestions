@@ -1,6 +1,5 @@
-Twitter Suggestions  [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-==========
-
+Twitter Suggestions   [![License: MIT](https://img.shields.io/badge/License-MIT-lightgrey.svg)](https://opensource.org/licenses/MIT)
+========== 
 Given a Twitter user (and his friend tweets) the program suggest 10 news article that can interest him.
 
 <p align="center">
