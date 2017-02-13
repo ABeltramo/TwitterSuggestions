@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="twittersuggestions" default="all">
+  
+  
+  <property file="twitter-suggestions.properties"/>
+  <!-- Uncomment the following property if no tests compilation is needed -->
+  <!-- 
+  <property name="skip.tests" value="true"/>
+   -->
+  
+  <!-- Compiler options -->
+  
+  <property name="compiler.debug" value="on"/>
+  <property name="compiler.generate.no.warnings" value="off"/>
+  <property name="compiler.args" value=""/>
+  <property name="compiler.max.memory" value="700m"/>
+  <patternset id="ignored.files">
+    <exclude name="**/*.hprof/**"/>
+    <exclude name="**/*.pyc/**"/>
+    <exclude name="**/*.pyo/**"/>
+    <exclude name="**/*.rbc/**"/>
+    <exclude name="**/*.yarb/**"/>
+    <exclude name="**/*~/**"/>
+    <exclude name="**/.DS_Store/**"/>
+    <exclude name="**/.git/**"/>
+    <exclude name="**/.hg/**"/>
+    <exclude name="**/.svn/**"/>
+    <exclude name="**/CVS/**"/>
+    <exclude name="**/__pycache__/**"/>
+    <exclude name="**/_svn/**"/>
+    <exclude name="**/vssver.scc/**"/>
+    <exclude name="**/vssver2.scc/**"/>
+  </patternset>
+  <patternset id="library.patterns">
+    <include name="*.war"/>
+    <include name="*.swc"/>
+    <include name="*.zip"/>
+    <include name="*.egg"/>
+    <include name="*.ane"/>
+    <include name="*.jar"/>
+    <include name="*.ear"/>
+  </patternset>
+  <patternset id="compiler.resources">
+    <exclude name="**/?*.java"/>
+    <exclude name="**/?*.form"/>
+    <exclude name="**/?*.class"/>
+    <exclude name="**/?*.groovy"/>
+    <exclude name="**/?*.scala"/>
+    <exclude name="**/?*.flex"/>
+    <exclude name="**/?*.kt"/>
+    <exclude name="**/?*.clj"/>
+    <exclude name="**/?*.aj"/>
+  </patternset>
+  
+  <!-- JDK definitions -->
+  
+  <property name="jdk.bin.1.8" value="${jdk.home.1.8}/bin"/>
+  <path id="jdk.classpath.1.8">
+    <fileset dir="${jdk.home.1.8}">
+      <include name="jre/lib/charsets.jar"/>
+      <include name="jre/lib/deploy.jar"/>
+      <include name="jre/lib/ext/cldrdata.jar"/>
+      <include name="jre/lib/ext/dnsns.jar"/>
+      <include name="jre/lib/ext/jaccess.jar"/>
+      <include name="jre/lib/ext/jfxrt.jar"/>
+      <include name="jre/lib/ext/localedata.jar"/>
+      <include name="jre/lib/ext/nashorn.jar"/>
+      <include name="jre/lib/ext/sunec.jar"/>
+      <include name="jre/lib/ext/sunjce_provider.jar"/>
+      <include name="jre/lib/ext/sunpkcs11.jar"/>
+      <include name="jre/lib/ext/zipfs.jar"/>
+      <include name="jre/lib/javaws.jar"/>
+      <include name="jre/lib/jce.jar"/>
+      <include name="jre/lib/jfr.jar"/>
+      <include name="jre/lib/jfxswt.jar"/>
+      <include name="jre/lib/jsse.jar"/>
+      <include name="jre/lib/management-agent.jar"/>
+      <include name="jre/lib/plugin.jar"/>
+      <include name="jre/lib/resources.jar"/>
+      <include name="jre/lib/rt.jar"/>
+      <include name="lib/ant-javafx.jar"/>
+      <include name="lib/dt.jar"/>
+      <include name="lib/javafx-mx.jar"/>
+      <include name="lib/jconsole.jar"/>
+      <include name="lib/packager.jar"/>
+      <include name="lib/sa-jdi.jar"/>
+      <include name="lib/tools.jar"/>
+    </fileset>
+  </path>
+  
+  <property name="project.jdk.home" value="${jdk.home.1.8}"/>
+  <property name="project.jdk.bin" value="${jdk.bin.1.8}"/>
+  <property name="project.jdk.classpath" value="jdk.classpath.1.8"/>
+  
+  
+  <!-- Project Libraries -->
+  
+  <path id="library.lucene-analyzers-common-6.2.1.classpath">
+    <pathelement location="${basedir}/API/lucene-6.2.1/analysis/common/lucene-analyzers-common-6.2.1.jar"/>
+  </path>
+  
+  <path id="library.lucene-core-6.2.1.classpath">
+    <pathelement location="${basedir}/API/lucene-6.2.1/core/lucene-core-6.2.1.jar"/>
+  </path>
+  
+  <path id="library.lucene-misc-6.2.1.classpath">
+    <pathelement location="${basedir}/API/lucene-6.2.1/misc/lucene-misc-6.2.1.jar"/>
+  </path>
+  
+  <path id="library.lucene-queries-6.2.1.classpath">
+    <pathelement location="${basedir}/API/lucene-6.2.1/queries/lucene-queries-6.2.1.jar"/>
+  </path>
+  
+  <path id="library.lucene-queryparser-6.2.1.classpath">
+    <pathelement location="${basedir}/API/lucene-6.2.1/queryparser/lucene-queryparser-6.2.1.jar"/>
+  </path>
+  
+  <path id="library.okhttp-3.5.0.classpath">
+    <pathelement location="${basedir}/API/okhttp/okhttp-3.5.0.jar"/>
+  </path>
+  
+  <path id="library.okio-1.11.0.classpath">
+    <pathelement location="${basedir}/API/okhttp/okio-1.11.0.jar"/>
+  </path>
+  
+  <path id="library.twitter4j-core-4.0.4.classpath">
+    <pathelement location="${basedir}/API/Twitter4J/twitter4j-core-4.0.4.jar"/>
+  </path>
+  
+  <!-- Modules -->
+  
+  
+  <!-- Module twitter-suggestions -->
+  
+  <dirname property="module.twitter-suggestions.basedir" file="${ant.file}"/>
+  
+  
+  <property name="module.jdk.home.twitter-suggestions" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.twitter-suggestions" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.twitter-suggestions" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.twitter-suggestions" value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
+  
+  <property name="twitter-suggestions.output.dir" value="${module.twitter-suggestions.basedir}/out/production/twitter-suggestions"/>
+  <property name="twitter-suggestions.testoutput.dir" value="${module.twitter-suggestions.basedir}/out/test/twitter-suggestions"/>
+  
+  <path id="twitter-suggestions.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="twitter-suggestions.module.production.classpath">
+    <path refid="${module.jdk.classpath.twitter-suggestions}"/>
+    <path refid="library.twitter4j-core-4.0.4.classpath"/>
+    <path refid="library.lucene-queries-6.2.1.classpath"/>
+    <path refid="library.lucene-core-6.2.1.classpath"/>
+    <path refid="library.lucene-queryparser-6.2.1.classpath"/>
+    <path refid="library.okhttp-3.5.0.classpath"/>
+    <path refid="library.okio-1.11.0.classpath"/>
+    <path refid="library.lucene-analyzers-common-6.2.1.classpath"/>
+    <path refid="library.lucene-misc-6.2.1.classpath"/>
+  </path>
+  
+  <path id="twitter-suggestions.runtime.production.module.classpath">
+    <pathelement location="${twitter-suggestions.output.dir}"/>
+    <path refid="library.twitter4j-core-4.0.4.classpath"/>
+    <path refid="library.lucene-queries-6.2.1.classpath"/>
+    <path refid="library.lucene-core-6.2.1.classpath"/>
+    <path refid="library.lucene-queryparser-6.2.1.classpath"/>
+    <path refid="library.okhttp-3.5.0.classpath"/>
+    <path refid="library.okio-1.11.0.classpath"/>
+    <path refid="library.lucene-analyzers-common-6.2.1.classpath"/>
+    <path refid="library.lucene-misc-6.2.1.classpath"/>
+  </path>
+  
+  <path id="twitter-suggestions.module.classpath">
+    <path refid="${module.jdk.classpath.twitter-suggestions}"/>
+    <pathelement location="${twitter-suggestions.output.dir}"/>
+    <path refid="library.twitter4j-core-4.0.4.classpath"/>
+    <path refid="library.lucene-queries-6.2.1.classpath"/>
+    <path refid="library.lucene-core-6.2.1.classpath"/>
+    <path refid="library.lucene-queryparser-6.2.1.classpath"/>
+    <path refid="library.okhttp-3.5.0.classpath"/>
+    <path refid="library.okio-1.11.0.classpath"/>
+    <path refid="library.lucene-analyzers-common-6.2.1.classpath"/>
+    <path refid="library.lucene-misc-6.2.1.classpath"/>
+  </path>
+  
+  <path id="twitter-suggestions.runtime.module.classpath">
+    <pathelement location="${twitter-suggestions.testoutput.dir}"/>
+    <pathelement location="${twitter-suggestions.output.dir}"/>
+    <path refid="library.twitter4j-core-4.0.4.classpath"/>
+    <path refid="library.lucene-queries-6.2.1.classpath"/>
+    <path refid="library.lucene-core-6.2.1.classpath"/>
+    <path refid="library.lucene-queryparser-6.2.1.classpath"/>
+    <path refid="library.okhttp-3.5.0.classpath"/>
+    <path refid="library.okio-1.11.0.classpath"/>
+    <path refid="library.lucene-analyzers-common-6.2.1.classpath"/>
+    <path refid="library.lucene-misc-6.2.1.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.twitter-suggestions">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.twitter-suggestions">
+    <patternset refid="excluded.from.module.twitter-suggestions"/>
+  </patternset>
+  
+  <path id="twitter-suggestions.module.sourcepath">
+    <dirset dir="${module.twitter-suggestions.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.twitter-suggestions" depends="compile.module.twitter-suggestions.production,compile.module.twitter-suggestions.tests" description="Compile module twitter-suggestions"/>
+  
+  <target name="compile.module.twitter-suggestions.production" description="Compile module twitter-suggestions; production classes">
+    <mkdir dir="${twitter-suggestions.output.dir}"/>
+    <javac destdir="${twitter-suggestions.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.twitter-suggestions}/javac">
+      <compilerarg line="${compiler.args.twitter-suggestions}"/>
+      <bootclasspath refid="twitter-suggestions.module.bootclasspath"/>
+      <classpath refid="twitter-suggestions.module.production.classpath"/>
+      <src refid="twitter-suggestions.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.twitter-suggestions"/>
+    </javac>
+    
+    <copy todir="${twitter-suggestions.output.dir}">
+      <fileset dir="${module.twitter-suggestions.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.twitter-suggestions.tests" depends="compile.module.twitter-suggestions.production" description="compile module twitter-suggestions; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.twitter-suggestions" description="cleanup module">
+    <delete dir="${twitter-suggestions.output.dir}"/>
+    <delete dir="${twitter-suggestions.testoutput.dir}"/>
+  </target>
+  
+  <target name="init" description="Build initialization">
+    <!-- Perform any build initialization in this target -->
+  </target>
+  
+  <target name="clean" depends="clean.module.twitter-suggestions" description="cleanup all"/>
+  
+  <target name="build.modules" depends="init, clean, compile.module.twitter-suggestions" description="build all modules"/>
+  
+  <target name="init.artifacts">
+    <property name="artifacts.temp.dir" value="${basedir}/__artifacts_temp"/>
+    <property name="artifact.output.twitter-suggestions:jar" value="${basedir}/out/artifacts/twitter_suggestions_jar"/>
+    <mkdir dir="${artifacts.temp.dir}"/>
+    <property name="temp.jar.path.twitter-suggestions.jar" value="${artifacts.temp.dir}/twitter-suggestions.jar"/>
+  </target>
+  
+  <target name="artifact.twitter-suggestions:jar" depends="init.artifacts, compile.module.twitter-suggestions" description="Build &#39;twitter-suggestions:jar&#39; artifact">
+    <property name="artifact.temp.output.twitter-suggestions:jar" value="${artifacts.temp.dir}/twitter_suggestions_jar"/>
+    <mkdir dir="${artifact.temp.output.twitter-suggestions:jar}"/>
+    <jar destfile="${temp.jar.path.twitter-suggestions.jar}" duplicate="preserve" filesetmanifest="mergewithoutmain">
+      <zipfileset dir="${twitter-suggestions.output.dir}"/>
+      <zipfileset src="${basedir}/API/lucene-6.2.1/core/lucene-core-6.2.1.jar"/>
+      <zipfileset src="${basedir}/API/lucene-6.2.1/queryparser/lucene-queryparser-6.2.1.jar"/>
+      <zipfileset src="${basedir}/API/lucene-6.2.1/queries/lucene-queries-6.2.1.jar"/>
+      <zipfileset src="${basedir}/API/Twitter4J/twitter4j-core-4.0.4.jar"/>
+      <zipfileset src="${basedir}/API/lucene-6.2.1/analysis/common/lucene-analyzers-common-6.2.1.jar"/>
+      <zipfileset src="${basedir}/API/okhttp/okio-1.11.0.jar"/>
+      <zipfileset src="${basedir}/API/lucene-6.2.1/misc/lucene-misc-6.2.1.jar"/>
+      <zipfileset src="${basedir}/API/okhttp/okhttp-3.5.0.jar"/>
+    </jar>
+    <copy file="${temp.jar.path.twitter-suggestions.jar}" tofile="${artifact.temp.output.twitter-suggestions:jar}/twitter-suggestions.jar"/>
+  </target>
+  
+  <target name="build.all.artifacts" depends="artifact.twitter-suggestions:jar" description="Build all artifacts">
+    <mkdir dir="${artifact.output.twitter-suggestions:jar}"/>
+    <copy todir="${artifact.output.twitter-suggestions:jar}">
+      <fileset dir="${artifact.temp.output.twitter-suggestions:jar}"/>
+    </copy>
+    
+    <!-- Delete temporary files -->
+    <delete dir="${artifacts.temp.dir}"/>
+  </target>
+  
+  <target name="all" depends="build.modules, build.all.artifacts" description="build all"/>
+</project>

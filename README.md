@@ -3,6 +3,10 @@ Twitter Suggestions
 
 Given a Twitter user (and his friend tweets) the program suggest 10 news article that can interest him.
 
+<p align="center">
+    <img src="screenshot_GUI.png">
+</p>
+
 ### How do I get set up? ###
 
 The project has been created using Intellij Idea Community Edition. To properly build it you have to:
@@ -11,6 +15,7 @@ The project has been created using Intellij Idea Community Edition. To properly 
 * Compile the project including all of the JAR present in the API/ folder
   
 Al already compiled version is present in the folder out/artifacts/twitter_suggestions_jar/ and it's ready to use.
+Is it possible to compile also with ANT using the file twitter-suggestions.xml
 
 ### How to use? ###
 
