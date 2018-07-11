@@ -6,6 +6,13 @@ Given a Twitter user (and his friend tweets) the program suggest 10 news article
     <img src="screenshot_GUI.png">
 </p>
 
+### Frameworks used ###
+
+* [Apache Lucene](https://lucene.apache.org/core/)
+* [News API](https://newsapi.org/)
+* [Twitter4J](http://twitter4j.org/en/index.html) 
+* [okhttp](https://github.com/square/okhttp)
+
 ### How do I get set up? ###
 
 The project has been created using Intellij Idea Community Edition. To properly build it you have to:
