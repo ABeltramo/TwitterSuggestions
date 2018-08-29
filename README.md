@@ -1,4 +1,4 @@
-Twitter Suggestions   [![License: MIT](https://img.shields.io/badge/License-MIT-lightgrey.svg)](https://opensource.org/licenses/MIT)
+Twitter Suggestions   [![Maintainability](https://api.codeclimate.com/v1/badges/c35a66928b9a5613b3f5/maintainability)](https://codeclimate.com/github/ABeltramo/TwitterSuggestions/maintainability)[![License: MIT](https://img.shields.io/badge/License-MIT-lightgrey.svg)](https://opensource.org/licenses/MIT)
 ========== 
 Given a Twitter user (and his friend tweets) the program suggest 10 news article that can interest him.
 
